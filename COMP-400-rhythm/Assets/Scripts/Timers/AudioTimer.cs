@@ -7,7 +7,7 @@ class AudioTimer : MonoBehaviour, ITimer
     public event Judgement JudgementEvent;
     public event SpawnNote SpawnNoteEvent;
     float lastBeatTime;
-    float interval = 2.0f;
+    float interval = 0.5f;
     int i = 0;
     [SerializeField] AudioSource audioSource;
     public InputAction jump;
@@ -32,7 +32,7 @@ class AudioTimer : MonoBehaviour, ITimer
         {
             // spawn note
             ++i;
-            SpawnNoteEvent.Invoke(i);
+            SpawnNoteEvent.Invoke(i, 0);
             lastBeatTime = Time.time;
         }
     }

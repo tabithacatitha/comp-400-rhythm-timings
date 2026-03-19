@@ -16,7 +16,7 @@ class SimpleTimer : MonoBehaviour, ITimer
         int i = 0;
         while (true)
         {
-            SpawnNoteEvent.Invoke(i);
+            SpawnNoteEvent.Invoke(i, 0);
             yield return new WaitForSeconds(0.5f);
             JudgementEvent.Invoke();
             ++i;

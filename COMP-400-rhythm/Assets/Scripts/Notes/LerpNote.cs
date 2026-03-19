@@ -6,19 +6,21 @@ class LerpNote : MonoBehaviour, INote
     static readonly float judgementPosition = -6.0f;
     float expectedJudgementTime;
     float startTime;
-    public void SetExpectedJudgementTime(float time)
+    float delay;
+    public void SetExpectedJudgementTime(float time, float delay)
     {
         this.expectedJudgementTime = time;
+        this.delay = delay;
     }
 
     void Awake()
     {
-        startTime = Time.time;
+        startTime = Time.unscaledTime - delay;
     }
 
     void Update()
     {
-        float timeNow = Time.time - startTime;
+        float timeNow = Time.unscaledTime - startTime;
         Vector3 position = transform.position;
         // lerp with overflow
         position.x = Mathf.LerpUnclamped(9.0f, judgementPosition, timeNow / expectedJudgementTime);
@@ -32,6 +34,6 @@ class LerpNote : MonoBehaviour, INote
 
     public float TimeUntilJudgement()
     {
-        return this.expectedJudgementTime - (Time.time - startTime);
+        return this.expectedJudgementTime - (Time.unscaledTime - startTime);
     }
 }

@@ -4,13 +4,14 @@ using System.Threading;
 using Mono.Cecil.Cil;
 using UnityEngine;
 
-public delegate void SpawnNote(int id);
+public delegate void SpawnNote(int id, float delay);
 public delegate int Judgement();
 public class GameVisualizer : MonoBehaviour
 {
     [SerializeField] GameObject timerObject;
     ITimer timer;
     [SerializeField] float interval;
+    [SerializeField] float noteLifespan = 1.0f;
     [SerializeField] Graph graph;
     [SerializeField] GameObject notePrefab;
     Dictionary<int, (GameObject, INote)> notes = new(); // visible notes
@@ -43,23 +44,25 @@ public class GameVisualizer : MonoBehaviour
         // pick the note with lowest id
         int id = notes.Min(x => x.Key);
 
-        // TODO: if note shouldn't be judged yet, don't judge it.
+        // if note shouldn't be judged yet, don't judge it. this works in BeatmapTimer, but not in others.
 
 
-        graph?.AddData(0, new Vector2(Time.time, notes[id].Item2.TimeUntilJudgement()));
+        // graph?.AddData(0, new Vector2(timer.GetMusicTime(), notes[id].Item2.TimeUntilJudgement()));
+        // graph.AddData(1, new Vector2(timer.GetGameTime(), timer.GetGameTime() - timer.GetMusicTime()));
 
         Destroy(notes[id].Item1);
         notes.Remove(id);
         return id;
     }
 
-    void OnSpawnNote(int id)
+    void OnSpawnNote(int id, float delay)
     {
+        // delay is a value that represents 
         noteY += 1.0f;
         if (noteY > 4.0f) noteY = -4.0f;
         GameObject noteObject = Instantiate(notePrefab, new Vector3(10.0f, noteY, 0), Quaternion.identity, transform);
         INote note = noteObject.GetComponent<INote>();
-        note.SetExpectedJudgementTime(0.5f);
+        note.SetExpectedJudgementTime(noteLifespan, delay);
         notes[id] = (noteObject, note);
     }
 }

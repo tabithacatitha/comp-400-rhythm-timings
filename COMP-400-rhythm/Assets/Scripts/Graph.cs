@@ -51,7 +51,7 @@ public class Graph : MonoBehaviour
     public void AddData(int index, Vector2 datapoint)
     {
         // adds the data to the index's list.
-        Debug.Log(string.Format("Datapoint added on line {0} at {1}", index, datapoint));
+        // Debug.Log(string.Format("Datapoint added on line {0} at {1}", index, datapoint));
         data[index].Add(datapoint);
         if (data[index].Count > maxDataPoints)
         {

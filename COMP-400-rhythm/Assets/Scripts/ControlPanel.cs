@@ -1,16 +1,24 @@
 using UnityEngine;
+using UnityEngine.UI;
 
-public class ControlPanel : MonoBehaviour
+class ControlPanel : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    bool lagging = false;
+    public void GenerateLag()
     {
-        
+        for (int i = 0; i < 10e3; ++i) {
+            Debug.Log("lag");
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    public void ToggleFramerateStutter()
     {
-        
+        lagging = !lagging;
+        Debug.Log(string.Format("toggled lag {0}", lagging));
+    }
+
+    void FixedUpdate()
+    {
+        if (lagging) System.Threading.Thread.Sleep(Random.Range(10,100));
     }
 }
