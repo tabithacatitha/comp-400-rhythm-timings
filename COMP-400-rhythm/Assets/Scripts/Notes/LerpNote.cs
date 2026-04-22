@@ -4,17 +4,13 @@ using UnityEngine;
 class LerpNote : MonoBehaviour, INote
 {
     static readonly float judgementPosition = -6.0f;
-    float expectedJudgementTime;
-    float startTime;
-    float delay;
+    [SerializeField] float expectedJudgementTime;
+    [SerializeField] float startTime;
+    [SerializeField] float delay;
     public void SetExpectedJudgementTime(float time, float delay)
     {
         this.expectedJudgementTime = time;
         this.delay = delay;
-    }
-
-    void Awake()
-    {
         startTime = Time.unscaledTime - delay;
     }
 

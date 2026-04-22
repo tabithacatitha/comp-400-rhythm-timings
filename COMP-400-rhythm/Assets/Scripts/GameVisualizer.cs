@@ -45,21 +45,28 @@ public class GameVisualizer : MonoBehaviour
         int id = notes.Min(x => x.Key);
 
         // if note shouldn't be judged yet, don't judge it. this works in BeatmapTimer, but not in others.
-
+        if (notes[id].Item1.transform.position.x < -3.0f)
+        {
+            Destroy(notes[id].Item1);
+            notes.Remove(id);
+            return id;
+        }
 
         // graph?.AddData(0, new Vector2(timer.GetMusicTime(), notes[id].Item2.TimeUntilJudgement()));
         // graph.AddData(1, new Vector2(timer.GetGameTime(), timer.GetGameTime() - timer.GetMusicTime()));
-
-        Destroy(notes[id].Item1);
-        notes.Remove(id);
-        return id;
+        return -1;
     }
 
     void OnSpawnNote(int id, float delay)
     {
-        // delay is a value that represents 
+        // delay is a value that represents how long ago the note should have spawned (delay > 0)
         noteY += 1.0f;
         if (noteY > 4.0f) noteY = -4.0f;
+        if (delay > noteLifespan)
+        {
+            Debug.Log("note skipped");
+            return;
+        }
         GameObject noteObject = Instantiate(notePrefab, new Vector3(10.0f, noteY, 0), Quaternion.identity, transform);
         INote note = noteObject.GetComponent<INote>();
         note.SetExpectedJudgementTime(noteLifespan, delay);

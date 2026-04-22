@@ -1,8 +1,9 @@
+using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 
 class ControlPanel : MonoBehaviour
 {
+    [SerializeField] TMPro.TMP_InputField inputField;
     bool lagging = false;
     public void GenerateLag()
     {
@@ -11,10 +12,29 @@ class ControlPanel : MonoBehaviour
         }
     }
 
+    void Start()
+    {
+        // StartCoroutine(SaveData());
+    }
+
+    private IEnumerator SaveData()
+    {
+        while (true) {
+            yield return new WaitForSecondsRealtime(20);
+            Debug.Log("data saved");
+            DataRecorder.Instance.Save();
+        }
+    }
+
     public void ToggleFramerateStutter()
     {
         lagging = !lagging;
         Debug.Log(string.Format("toggled lag {0}", lagging));
+    }
+
+    public void WriteToCSV()
+    {
+        DataRecorder.Instance.OutputToCSV(inputField.text);
     }
 
     void FixedUpdate()

@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -14,6 +13,8 @@ class BeatmapTimer : MonoBehaviour, ITimer
     public InputAction jump;
     [SerializeField] Graph graph;
     float musicStartTime;
+    float prevMusicTime = 0.0f;
+    // float audioDesyncTolerance = 0.1f;
 
     void Awake()
     {
@@ -24,22 +25,61 @@ class BeatmapTimer : MonoBehaviour, ITimer
     void Start()
     {
         audioSource.Play();
-        musicStartTime = Time.unscaledTime; // can use audiosource.time instead if you want
+        musicStartTime = Time.unscaledTime;
+    }
+
+    void Update()
+    {
+        DataRecorder.Instance.AddData("Updates", 1, Time.unscaledTime);
     }
 
     void FixedUpdate()
     {
-        float time = GetMusicTime();
+        DataRecorder.Instance.AddData("Updates", 0, Time.unscaledTime);
+        if (prevMusicTime != audioSource.time)
+        {
+            prevMusicTime = audioSource.time;
+            DataRecorder.Instance.AddData("Updates", 2, Time.unscaledTime);
+        }
+        if (i < beatmap.beats.Count)
+        {
+            float time = GetGameTime() - audioDelay;
+            Beat beat = beatmap.beats[i];
+            while (time > beat.spawnTime)
+            {
+                SpawnNoteEvent.Invoke(i, time - beat.spawnTime);
+                // Debug.Log(string.Format("{0}, {1}, {2}", beat.spawnTime, time, GetMusicTime()));
+                ++i;
+                beat = beatmap.beats[i];
+            }
+        }
 
-        // float timeSinceLastBeat = Time.unscaledTime - lastBeatTime;
-        // SpawnNoteEvent.Invoke(i, timeSinceLastBeat - interval);
+        // update music time
+        // float playbackDuration = Time.unscaledTime - musicStartTime;
+        // if (Mathf.Abs(audioSource.time - playbackDuration) > audioDesyncTolerance)
+        // {
+        //     // just synchronize it for now.
+        //     Debug.Log("Audio Sync Corrected");
+        //     audioSource.time = Time.unscaledTime - musicStartTime - audioDelay;
+        // }
+
+        // update music time
+        // float playbackDuration = Time.unscaledTime - musicStartTime;
+        // if (Mathf.Abs(audioSource.timeSamples / AudioSettings.outputSampleRate - playbackDuration) > audioDesyncTolerance)
+        // {
+        //     // just synchronize it for now.
+        //     Debug.Log("Audio Sync Corrected");
+        //     audioSource.timeSamples = (int) ((Time.unscaledTime - musicStartTime - audioDelay) * AudioSettings.outputSampleRate);
+        // }
     }
 
     void Judge(InputAction.CallbackContext ctx)
     {
         if (ctx.performed)
         {
-            Debug.Log(ctx.time);
+            graph.AddData(0, new Vector2(Time.unscaledTime, (float) ctx.startTime));
+            Debug.Log(Time.unscaledTime - ctx.startTime);
+            // Debug.Log(GetMusicTime());
             int id = JudgementEvent.Invoke();
         }
     }

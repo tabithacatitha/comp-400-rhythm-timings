@@ -45,22 +45,22 @@ MonoBehaviour:
     spawnTime: 7
   - judgementTime: 8.5
     spawnTime: 7.5
-  - judgementTime: 0
-    spawnTime: 0
+  - judgementTime: 9
+    spawnTime: 8
   - judgementTime: 9.5
     spawnTime: 8.5
   - judgementTime: 10
     spawnTime: 9
-  - judgementTime: 0
-    spawnTime: 0
-  - judgementTime: 0
-    spawnTime: 0
+  - judgementTime: 10.5
+    spawnTime: 9.5
+  - judgementTime: 11
+    spawnTime: 10
   - judgementTime: 11.5
     spawnTime: 10.5
   - judgementTime: 12
     spawnTime: 11
-  - judgementTime: 0
-    spawnTime: 0
+  - judgementTime: 12.5
+    spawnTime: 11.5
   - judgementTime: 13
     spawnTime: 12
   - judgementTime: 13.5
